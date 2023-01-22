@@ -1,22 +1,19 @@
-{{- if .Values.config.snmpTemplates }}
+{{- if .Values.snmpNotifier.snmpTemplates }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "prometheus-snmp-notifier.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ include "alertmanager-snmp-notifier.fullname" . }}
   labels:
-    {{- include "prometheus-snmp-notifier.labels" . | indent 4 }}
+    {{- include "alertmanager-snmp-notifier.labels" . | nindent 4 }}
 data:
-{{- if .Values.config.snmpTemplates.description }}
+{{- if .Values.snmpNotifier.snmpTemplates.description }}
   description-template.tpl: |
-{{ .Values.config.snmpTemplates.description | indent 4 }}
+{{ .Values.snmpNotifier.snmpTemplates.description | indent 4 }}
 {{- end }}
-{{- if .Values.config.snmpTemplates.extraFields }}
-{{- range $index, $element := .Values.config.snmpTemplates.extraFields }}
-  extra-field-{{ add 4 $index }}-template.tpl: |
+{{- if .Values.snmpNotifier.snmpTemplates.extraFields }}
+  {{- range $element := .Values.snmpNotifier.snmpTemplates.extraFields }}
+  extra-field-{{ $element.subId }}-template.tpl: |
 {{ $element.template | indent 4 }}
 {{- end }}
 {{- end }}
-
-
 {{- end }}
